@@ -1,7 +1,13 @@
 #include "OneginSort.h"
 
-int isProperLine(wchar_t* line) {
-    return (line[0] >= 1040 && line[0] <= 1103);
+
+int isProperLine(const char* line) {
+    for(size_t i = 0; line[i] != '\0'; ++i) {
+        if(!isDelimeter(&line[i], delims)) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void OneginSort(const char* inputFileName, const char* outputFileName) {
@@ -13,36 +19,44 @@ void OneginSort(const char* inputFileName, const char* outputFileName) {
 
     StringArray* copiedLines = CopyArray(lines);
 
-    qsort(copiedLines->strings, copiedLines->Length, sizeof(wchar_t*),
-        StringCompare);
-
     /*
     for(size_t i = 0; i < copiedLines->Length; ++i) {
-        wprintf(L"%ls %lu\n", copiedLines->strings[i], i);
-    }
-    */
+        size_t index = -1;
+        while(true) {
+            index++;
+            //assert(copiedLines->strings[i][index] != '\0');
+            if(copiedLines->strings[i][index] == '\0')
+                break;
+            printf("%d ", copiedLines->strings[i][index]);
+        }
+        printf("\n");
+    }*/
+
+    qsort(copiedLines->strings, copiedLines->Length, sizeof(char*),
+        StringCompare);
+
     FILE* outputFile = fopen(outputFileName, "w");
 
     for(size_t i = 0; i < lines->Length; ++i) {
-        fputws(copiedLines->strings[i], outputFile);
-        fputwc(L'\n', outputFile);
+        fputs(copiedLines->strings[i], outputFile);
+        fputc('\n', outputFile);
     }
 
-    fputws(L"\n\n\n", outputFile);
+    fputs("\n#\n\n", outputFile);
 
     for(size_t i = 0; i < lines->Length; ++i) {
-        fputws(lines->strings[i], outputFile);
-        fputwc(L'\n', outputFile);
+        fputs(lines->strings[i], outputFile);
+        fputc('\n', outputFile);
     }
 
-    fputws(L"\n\n\n", outputFile);
+    fputs("\n#\n\n", outputFile);
 
-    qsort(copiedLines->strings, copiedLines->Length, sizeof(wchar_t*),
+    qsort(copiedLines->strings, copiedLines->Length, sizeof(char*),
          StringCompareReverse);
 
     for(size_t i = 0; i < lines->Length; ++i) {
-        fputws(copiedLines->strings[i], outputFile);
-        fputwc(L'\n', outputFile);
+        fputs(copiedLines->strings[i], outputFile);
+        fputc('\n', outputFile);
     }
 
     fclose(outputFile);
@@ -53,13 +67,13 @@ void OneginSort(const char* inputFileName, const char* outputFileName) {
 
 
 
-wchar_t* ReadOneLine(FILE* file) {
-    wchar_t* line = (wchar_t*) calloc(1024, sizeof(wchar_t));
+char* ReadOneLine(FILE* file) {
+    char* line = (char*) calloc(1024, sizeof(char));
     size_t i = 0;
-    wint_t temp = 0;
+    int temp = 0;
 
     while(true) {
-        temp = fgetwc(file);
+        temp = fgetc(file);
 
         if(temp == -1) {
             if(i == 0) {
@@ -76,10 +90,10 @@ wchar_t* ReadOneLine(FILE* file) {
 
             break;
         }
-        line[i++] = temp;
+        line[i++] = (char) temp;
     }
 
-    line[i] = L'\0';
+    line[i] = '\0';
 
     return line;
 }
@@ -88,7 +102,7 @@ struct StringArray* ReadLines(FILE* file) {
     StringArray* lines = NewArray(1000);
 
     while(true) {
-        wchar_t* line = ReadOneLine(file);
+        char* line = ReadOneLine(file);
 
         if(line == NULL) {
             break;

@@ -5,18 +5,17 @@
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <wchar.h>
 
-static wchar_t* currentStr = NULL;
-const wchar_t delims[] = L" .,!@#$%^&*()_+\"№;%:?1234567890";
+static char* currentStr = NULL;
+const char delims[] = " .,!?\"\'[]1234567890-():;";
 
-int isDelimeter(wchar_t* symbol, const wchar_t* delimeters);
+int isDelimeter(const char* symbol, const char* delimeters);
 
-size_t strlen(const wchar_t* str);
-wchar_t* strncpy(wchar_t* destination, const wchar_t* source, size_t num);
-wchar_t* strncat(wchar_t* destination, const wchar_t* source, size_t num);
-wchar_t* strstr(wchar_t* str1, const wchar_t* str2);
-wchar_t* strtok(wchar_t* str, const wchar_t* delimiters);
+size_t strlen(const char* str);
+char* strncpy(char* destination, const char* source, size_t num);
+char* strncat(char* destination, const char* source, size_t num);
+char* strstr(char* str1, const char* str2);
+char* strtok(char* str, const char* delimiters);
 
 int StringCompare(const void* a, const void* b);
 int StringCompareReverse(const void* a, const void* b);
