@@ -1,4 +1,5 @@
 #include "StringFunctions.h"
+static char* currentStr = NULL;
 
 size_t strlen(const char* str) {
     size_t strLength = 0;
@@ -77,7 +78,7 @@ char* strstr(char* str1, const char* str2 ) {
     return str1 + (i - matchedI);
 }
 
-int isDelimeter(const char* symbol, const char* delimeters) {
+int IsDelimeter(const char* symbol, const char* delimeters) {
     for(size_t i = 0; delimeters[i] != L'\0'; ++i) {
         if(*symbol == delimeters[i]) {
             return true;
@@ -104,7 +105,7 @@ char* strtok(char* str, const char* delimiters) {
     int isToken = false;
 
     for(; *currentStr != L'\0'; ++currentStr) {
-        if(isDelimeter(currentStr, delimiters)) {
+        if(IsDelimeter(currentStr, delimiters)) {
             if(!isToken) {
                 continue;
             }
@@ -112,8 +113,8 @@ char* strtok(char* str, const char* delimiters) {
         }
 
         isToken = true;
-        nextToken[i] = *currentStr;
-        ++i;
+        nextToken[i++] = *currentStr;
+        //++i;
     }
 
     if(i == 0) {
@@ -126,10 +127,7 @@ char* strtok(char* str, const char* delimiters) {
     return nextToken;
 }
 
-int StringCompare(const void* a, const void* b) {
-    const char* str1 = *(const char**) a;
-    const char* str2 = *(const char**) b;
-
+int strcmp(const char* str1, const char* str2) {
     size_t i1 = 0, i2 = 0;
 
     while(true) {
@@ -144,15 +142,6 @@ int StringCompare(const void* a, const void* b) {
             return 1;
         }
 
-        if(isDelimeter(&str1[i1], delims)) {
-            ++i1;
-            continue;
-        }
-        if(isDelimeter(&str2[i2], delims)) {
-            ++i2;
-            continue;
-        }
-
         if(str1[i1] != str2[i2]) {
             if(str1[i1] > str2[i2]) {
                 return 1;
@@ -161,44 +150,5 @@ int StringCompare(const void* a, const void* b) {
         }
 
         ++i1; ++i2;
-    }
-}
-
-int StringCompareReverse(const void* a, const void* b) {
-    const char* str1 = *(const char**) a;
-    const char* str2 = *(const char**) b;
-
-    int i1 = (int) strlen(str1) - 1, i2 = (int) strlen(str2) - 1;
-
-    while(true) {
-        if(i1 == -1 && i2 == -1) {
-            return 0;
-        }
-        if(i1 == -1) {
-            return -1;
-        }
-        if(i2 == -1) {
-            return 1;
-        }
-
-        if(isDelimeter(&str1[i1], delims)) {
-            //assert(false);
-            --i1;
-            continue;
-        }
-        if(isDelimeter(&str2[i2], delims)) {
-            //assert(false);
-            --i2;
-            continue;
-        }
-
-        if(str1[i1] != str2[i2]) {
-            if(str1[i1] > str2[i2]) {
-                return 1;
-            }
-            return -1;
-        }
-
-        --i1; --i2;
     }
 }

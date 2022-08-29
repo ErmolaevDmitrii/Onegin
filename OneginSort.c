@@ -1,9 +1,8 @@
 #include "OneginSort.h"
 
-
-int isProperLine(const char* line) {
+int IsProperLine(const char* line) {
     for(size_t i = 0; line[i] != '\0'; ++i) {
-        if(!isDelimeter(&line[i], delims)) {
+        if(!IsDelimeter(&line[i], delims)) {
             return 1;
         }
     }
@@ -11,63 +10,43 @@ int isProperLine(const char* line) {
 }
 
 void OneginSort(const char* inputFileName, const char* outputFileName) {
-    FILE* inputFile = fopen(inputFileName, "r");
+    assert(inputFileName  != NULL);
+    assert(outputFileName != NULL);
+
+    FILE* inputFile  = fopen(inputFileName , "r");
+    assert(inputFile  != NULL);
+
+    FILE* outputFile = fopen(outputFileName, "w");
+    assert(outputFile != NULL);
 
     StringArray* lines = ReadLines(inputFile);
 
     fclose(inputFile);
 
     StringArray* copiedLines = CopyArray(lines);
-
-    /*
-    for(size_t i = 0; i < copiedLines->Length; ++i) {
-        size_t index = -1;
-        while(true) {
-            index++;
-            //assert(copiedLines->strings[i][index] != '\0');
-            if(copiedLines->strings[i][index] == '\0')
-                break;
-            printf("%d ", copiedLines->strings[i][index]);
-        }
-        printf("\n");
-    }*/
-
     qsort(copiedLines->strings, copiedLines->Length, sizeof(char*),
         StringCompare);
-
-    FILE* outputFile = fopen(outputFileName, "w");
-
-    for(size_t i = 0; i < lines->Length; ++i) {
-        fputs(copiedLines->strings[i], outputFile);
-        fputc('\n', outputFile);
-    }
+    WriteLines(outputFile, copiedLines);
 
     fputs("\n#\n\n", outputFile);
-
-    for(size_t i = 0; i < lines->Length; ++i) {
-        fputs(lines->strings[i], outputFile);
-        fputc('\n', outputFile);
-    }
-
+    WriteLines(outputFile, lines);
     fputs("\n#\n\n", outputFile);
 
     qsort(copiedLines->strings, copiedLines->Length, sizeof(char*),
          StringCompareReverse);
-
-    for(size_t i = 0; i < lines->Length; ++i) {
-        fputs(copiedLines->strings[i], outputFile);
-        fputc('\n', outputFile);
-    }
+    WriteLines(outputFile, copiedLines);
 
     fclose(outputFile);
 
     DeleteArray(copiedLines);
     DeleteArray(lines);
+
+    return;
 }
 
-
-
 char* ReadOneLine(FILE* file) {
+    assert(file != NULL);
+
     char* line = (char*) calloc(1024, sizeof(char));
     size_t i = 0;
     int temp = 0;
@@ -75,7 +54,7 @@ char* ReadOneLine(FILE* file) {
     while(true) {
         temp = fgetc(file);
 
-        if(temp == -1) {
+        if(temp == EOF) {
             if(i == 0) {
                 free(line);
                 return NULL;
@@ -99,6 +78,8 @@ char* ReadOneLine(FILE* file) {
 }
 
 struct StringArray* ReadLines(FILE* file) {
+    assert(file != NULL);
+
     StringArray* lines = NewArray(1000);
 
     while(true) {
@@ -108,8 +89,8 @@ struct StringArray* ReadLines(FILE* file) {
             break;
         }
 
-        if(isProperLine(line)) {
-            AddElement(lines, line);
+        if(IsProperLine(line)) {
+            AddString(lines, line);
         }
         else {
             free(line);
@@ -118,3 +99,98 @@ struct StringArray* ReadLines(FILE* file) {
 
     return lines;
 }
+
+
+void WriteLines(FILE* file, const struct StringArray* lines) {
+    assert(file != NULL);
+
+    for(size_t i = 0; i < lines->Length; ++i) {
+        fputs(lines->strings[i]->string, file);
+        fputc('\n', file);
+    }
+
+    return;
+}
+
+int StringCompare(const void* a, const void* b) {
+    const StringArrayElement* element1 = *(StringArrayElement* const *) a;
+    const StringArrayElement* element2 = *(StringArrayElement* const *) b;
+    const char* str1 = element1->string;
+    const char* str2 = element2->string;
+
+    size_t i1 = 0, i2 = 0;
+
+    while(true) {
+        if(str1[i1] == '\0' && str2[i2] == '\0') {
+            return 0;
+        }
+
+        if(str1[i1] == '\0') {
+            return -1;
+        }
+        if(str2[i2] == '\0') {
+            return 1;
+        }
+
+        if(IsDelimeter(&str1[i1], delims)) {
+            ++i1;
+            continue;
+        }
+        if(IsDelimeter(&str2[i2], delims)) {
+            ++i2;
+            continue;
+        }
+
+        if(str1[i1] != str2[i2]) {
+            if(str1[i1] > str2[i2]) {
+                return 1;
+            }
+            return -1;
+        }
+
+        ++i1; ++i2;
+    }
+}
+
+int StringCompareReverse(const void* a, const void* b) {
+    const StringArrayElement* element1 = *(StringArrayElement* const *) a;
+    const StringArrayElement* element2 = *(StringArrayElement* const *) b;
+    const char* str1 = element1->string;
+    const char* str2 = element2->string;
+
+    int i1 = (int) element1->stringSize - 1,
+        i2 = (int) element2->stringSize - 1;
+
+    while(true) {
+        if(i1 == -1 && i2 == -1) {
+            return 0;
+        }
+        if(i1 == -1) {
+            return -1;
+        }
+        if(i2 == -1) {
+            return 1;
+        }
+
+        if(IsDelimeter(&str1[i1], delims)) {
+            //assert(false);
+            --i1;
+            continue;
+        }
+        if(IsDelimeter(&str2[i2], delims)) {
+            //assert(false);
+            --i2;
+            continue;
+        }
+
+        if(str1[i1] != str2[i2]) {
+            if(str1[i1] > str2[i2]) {
+                return 1;
+            }
+            return -1;
+        }
+
+        --i1; --i2;
+    }
+}
+
