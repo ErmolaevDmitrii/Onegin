@@ -50,31 +50,11 @@ char* ReadOneLine(FILE* file) {
     assert(file != NULL);
 
     char* line = (char*) calloc(1024, sizeof(char));
-    size_t i = 0;
-    int temp = 0;
 
-    while(true) {
-        temp = fgetc(file);
-
-        if(temp == EOF) {
-            if(i == 0) {
-                free(line);
-                return NULL;
-            }
-            break;
-        }
-
-        if(temp == '\n') {
-            if(i == 0) {
-                continue;
-            }
-
-            break;
-        }
-        line[i++] = (char) temp;
+    if(fgets(line, 1024, file) == NULL) {
+        free(line);
+        return NULL;
     }
-
-    line[i] = '\0';
 
     return line;
 }
@@ -107,7 +87,6 @@ void WriteLines(FILE* file, const struct StringArray* lines) {
 
     for(size_t i = 0; i < lines->Length; ++i) {
         fputs(lines->strings[i]->string, file);
-        fputc('\n', file);
     }
 
     return;
@@ -118,7 +97,7 @@ int IsInRange(const char* symbol, char border1, char border2) {
 }
 
 int IsSkipable(const char* symbol) {
-    return IsInRange(symbol, ' ', '@') || IsInRange(symbol, '[', '`') ||
+    return IsInRange(symbol, '\n', '@') || IsInRange(symbol, '[', '`') ||
            IsInRange(symbol, '{', '}');
 }
 
