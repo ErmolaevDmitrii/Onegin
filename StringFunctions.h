@@ -9,12 +9,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-/// a pointer to strcat operated cstring
-
-
-/// cstring with delimeters for OneginSort.h
-const char delims[] = " .,!?\"\'[]1234567890-()*:;";
-
 /// Function for identification if char is a delimeter
 /// @param [in] symbol a const pointer to a symbol
 /// @param [in] delimeters a const pointer to cstring with delimeters

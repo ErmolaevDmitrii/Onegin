@@ -6,6 +6,16 @@
 #include "StringFunctions.h"
 #include "StringArray.h"
 
+const char delims[] = " .,!?\"\'[]1234567890-()*:;";
+
+
+int IsInRange(const char* symbol, const char border1, const char border2);
+
+/// Function to check if symbol can be skipped in check in comparators
+/// @param [in] symbol a const pointer to char
+/// @return 1 or 0 if symbol can be skipped or not
+int IsSkipable(const char* symbol);
+
 /// Function to compare 2 strings from the beginning (for qsort function)
 /// @param [in] a a const pointer to first cstring
 /// @param [in] b a const pointer to second cstring

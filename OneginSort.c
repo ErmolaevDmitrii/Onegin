@@ -2,7 +2,9 @@
 
 int IsProperLine(const char* line) {
     for(size_t i = 0; line[i] != '\0'; ++i) {
-        if(!IsDelimeter(&line[i], delims)) {
+        if(!IsSkipable(&line[i])) {
+            //printf("%d %d\n", line[i], i);
+            //assert(false);
             return 1;
         }
     }
@@ -100,7 +102,6 @@ struct StringArray* ReadLines(FILE* file) {
     return lines;
 }
 
-
 void WriteLines(FILE* file, const struct StringArray* lines) {
     assert(file != NULL);
 
@@ -110,6 +111,15 @@ void WriteLines(FILE* file, const struct StringArray* lines) {
     }
 
     return;
+}
+
+int IsInRange(const char* symbol, char border1, char border2) {
+    return (*symbol) >= border1 && (*symbol) <= border2;
+}
+
+int IsSkipable(const char* symbol) {
+    return IsInRange(symbol, ' ', '@') || IsInRange(symbol, '[', '`') ||
+           IsInRange(symbol, '{', '}');
 }
 
 int StringCompare(const void* a, const void* b) {
@@ -132,11 +142,11 @@ int StringCompare(const void* a, const void* b) {
             return 1;
         }
 
-        if(IsDelimeter(&str1[i1], delims)) {
+        if(IsSkipable(&str1[i1])) {
             ++i1;
             continue;
         }
-        if(IsDelimeter(&str2[i2], delims)) {
+        if(IsSkipable(&str2[i2])) {
             ++i2;
             continue;
         }
@@ -172,13 +182,11 @@ int StringCompareReverse(const void* a, const void* b) {
             return 1;
         }
 
-        if(IsDelimeter(&str1[i1], delims)) {
-            //assert(false);
+        if(IsSkipable(&str1[i1])) {
             --i1;
             continue;
         }
-        if(IsDelimeter(&str2[i2], delims)) {
-            //assert(false);
+        if(IsSkipable(&str2[i2])) {
             --i2;
             continue;
         }

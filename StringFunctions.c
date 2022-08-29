@@ -1,4 +1,6 @@
 #include "StringFunctions.h"
+
+/// a pointer to strcat operated cstring
 static char* currentStr = NULL;
 
 size_t strlen(const char* str) {
