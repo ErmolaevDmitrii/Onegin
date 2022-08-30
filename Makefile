@@ -20,4 +20,4 @@ StringFunctions.o:
 	$(CC) $(CFLAGS) StringFunctions.c -c
 
 clean:
-	rm -rf *.o a
+	rm -rf *.o
