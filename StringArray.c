@@ -1,33 +1,47 @@
+/// @file
+/// @brief Source file with realisations of functions from StringArray.h
+
 #include "StringArray.h"
 
 struct StringArrayElement* CopyElement(const struct StringArrayElement* element) {
-    struct StringArrayElement* newElement = (StringArrayElement*)
-                                            calloc(1, sizeof(StringArrayElement));
+    struct StringArrayElement* newElement = (struct StringArrayElement*) calloc(
+        1,
+        sizeof(struct StringArrayElement)
+    );
     newElement->stringSize = element->stringSize;
     newElement->string = (char*) calloc(element->stringSize + 1, sizeof(char));
     strncpy(newElement->string, element->string, element->stringSize);
+
     return newElement;
 }
 
 void DeleteElement(struct StringArrayElement* element) {
     free(element->string);
     free(element);
+
     return;
 }
 
 struct StringArray* NewArray(size_t preCreated) {
-    struct StringArray* createdArray = (StringArray*) calloc(1, sizeof(StringArray));
+    struct StringArray* createdArray = (struct StringArray*) calloc(
+        1,
+        sizeof(struct StringArray)
+    );
     createdArray->Size = preCreated;
-    createdArray->strings = (StringArrayElement**)
-                            calloc(preCreated, sizeof(StringArrayElement*));
+    createdArray->strings = (struct StringArrayElement**) calloc(
+        preCreated,
+        sizeof(struct StringArrayElement*)
+    );
     createdArray->Length = 0;
 
     return createdArray;
 }
 
 void AddString(struct StringArray* array, char* newString) {
-    StringArrayElement* newElement = (StringArrayElement*)
-                                     calloc(1, sizeof(StringArrayElement));
+    struct StringArrayElement* newElement = (struct StringArrayElement*) calloc(
+        1,
+        sizeof(struct StringArrayElement)
+    );
     newElement->string = newString;
     newElement->stringSize = strlen(newString);
 
@@ -36,8 +50,11 @@ void AddString(struct StringArray* array, char* newString) {
     }
     else {
         array->Size *= 2;
-        array->strings = (StringArrayElement**)
-            realloc(array->strings, sizeof(StringArrayElement*) * array->Size);
+        array->strings = (struct StringArrayElement**) realloc(
+            array->strings,
+            sizeof(struct StringArrayElement*) * array->Size
+        );
+
         array->strings[array->Length++] = newElement;
     }
 
@@ -49,7 +66,8 @@ void PopElement(struct StringArray* array) {
         return;
     }
 
-    StringArrayElement* element = array->strings[array->Length - 1];
+    struct StringArrayElement* element = array->strings[array->Length - 1];
+
     if(element == NULL) {
         return;
     }
@@ -68,11 +86,11 @@ char* GetString(const struct StringArray* array, size_t index) {
     return array->strings[index]->string;
 }
 
-
 void SwapElements(struct StringArray* array, size_t index1, size_t index2) {
     struct StringArrayElement* temp = array->strings[index1];
     array->strings[index1] = array->strings[index2];
     array->strings[index2] = temp;
+
     return;
 }
 

@@ -1,10 +1,11 @@
+/// @file
+/// @brief Source file containing realisations of functions from OneginSort.h
+
 #include "OneginSort.h"
 
 int IsProperLine(const char* line) {
     for(size_t i = 0; line[i] != '\0'; ++i) {
         if(!IsSkipable(&line[i])) {
-            //printf("%d %d\n", line[i], i);
-            //assert(false);
             return 1;
         }
     }
@@ -21,11 +22,11 @@ void OneginSort(const char* inputFileName, const char* outputFileName) {
     FILE* outputFile = fopen(outputFileName, "w");
     assert(outputFile != NULL);
 
-    StringArray* lines = ReadLines(inputFile);
+    struct StringArray* lines = ReadLines(inputFile);
 
     fclose(inputFile);
 
-    StringArray* copiedLines = CopyArray(lines);
+    struct StringArray* copiedLines = CopyArray(lines);
     qsort(copiedLines->strings, copiedLines->Length, sizeof(char*),
         StringCompare);
     WriteLines(outputFile, copiedLines);
@@ -61,10 +62,43 @@ char* ReadOneLine(FILE* file) {
 
 struct StringArray* ReadLines(FILE* file) {
     assert(file != NULL);
-
-    StringArray* lines = NewArray(1000);
+/*
+    size_t linesCount = 0;
+    char* allLines = (char*) calloc(1024, sizeof(char));
 
     while(true) {
+        char* line = (char*) calloc(1024, sizeof(char));
+        if(fgets(line, 1024, file) == NULL) {
+            free(line);
+            break;
+        }
+        printf("%s\n", line);
+        allLines = (char*) realloc(allLines, (++linesCount) * 1024 * sizeof(char));
+        strncat(allLines, line, strlen(line));
+        free(line);
+    }
+
+    StringArray* lines = NewArray(linesCount);
+
+    char* line = (char*) calloc(1024, sizeof(char));
+    line = strtok(allLines, "\n");
+    AddString(lines, line);
+
+    while(true) {
+        line = (char*) calloc(1024, sizeof(char));
+        line = strtok(NULL, "\n");
+        if(line == NULL) {
+            break;
+        }
+        printf("%s\n", line);
+        AddString(lines, line);
+    }
+    free(allLines);
+    return lines;*/
+
+    struct StringArray* lines = NewArray(1000);
+
+    while(1) {
         char* line = ReadOneLine(file);
 
         if(line == NULL) {
@@ -102,14 +136,16 @@ int IsSkipable(const char* symbol) {
 }
 
 int StringCompare(const void* a, const void* b) {
-    const StringArrayElement* element1 = *(StringArrayElement* const *) a;
-    const StringArrayElement* element2 = *(StringArrayElement* const *) b;
+    const struct StringArrayElement* element1 =
+                                     *(struct StringArrayElement* const *) a;
+    const struct StringArrayElement* element2 =
+                                     *(struct StringArrayElement* const *) b;
     const char* str1 = element1->string;
     const char* str2 = element2->string;
 
     size_t i1 = 0, i2 = 0;
 
-    while(true) {
+    while(1) {
         if(str1[i1] == '\0' && str2[i2] == '\0') {
             return 0;
         }
@@ -142,15 +178,17 @@ int StringCompare(const void* a, const void* b) {
 }
 
 int StringCompareReverse(const void* a, const void* b) {
-    const StringArrayElement* element1 = *(StringArrayElement* const *) a;
-    const StringArrayElement* element2 = *(StringArrayElement* const *) b;
+    const struct StringArrayElement* element1 =
+                                     *(struct StringArrayElement* const *) a;
+    const struct StringArrayElement* element2 =
+                                     *(struct StringArrayElement* const *) b;
     const char* str1 = element1->string;
     const char* str2 = element2->string;
 
     int i1 = (int) element1->stringSize - 1,
         i2 = (int) element2->stringSize - 1;
 
-    while(true) {
+    while(1) {
         if(i1 == -1 && i2 == -1) {
             return 0;
         }

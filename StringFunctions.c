@@ -1,3 +1,6 @@
+/// @file
+/// @brief Source file containing realisations of functions from StringFunctions.h
+
 #include "StringFunctions.h"
 
 /// a pointer to strcat operated cstring
@@ -16,12 +19,12 @@ size_t strlen(const char* str) {
 }
 
 char* strncpy(char* destination, const char* source, size_t num) {
-    int isEnd = false;
+    int isEnd = 0;
 
     for(size_t i = 0; i < num; ++i) {
         if(isEnd || source[i] == L'\0') {
             destination[i] = L'\0';
-            isEnd = true;
+            isEnd = 1;
             continue;
         }
 
@@ -83,11 +86,11 @@ char* strstr(char* str1, const char* str2 ) {
 int IsDelimeter(const char* symbol, const char* delimeters) {
     for(size_t i = 0; delimeters[i] != L'\0'; ++i) {
         if(*symbol == delimeters[i]) {
-            return true;
+            return 1;
         }
     }
 
-    return false;
+    return 0;
 }
 
 char* strtok(char* str, const char* delimiters) {
@@ -104,7 +107,7 @@ char* strtok(char* str, const char* delimiters) {
     char* nextToken = (char*) calloc(strLength, sizeof(char));
 
     size_t i = 0;
-    int isToken = false;
+    int isToken = 0;
 
     for(; *currentStr != L'\0'; ++currentStr) {
         if(IsDelimeter(currentStr, delimiters)) {
@@ -114,7 +117,7 @@ char* strtok(char* str, const char* delimiters) {
             break;
         }
 
-        isToken = true;
+        isToken = 1;
         nextToken[i++] = *currentStr;
         //++i;
     }
@@ -132,7 +135,7 @@ char* strtok(char* str, const char* delimiters) {
 int strcmp(const char* str1, const char* str2) {
     size_t i1 = 0, i2 = 0;
 
-    while(true) {
+    while(1) {
         if(str1[i1] == '\0' && str2[i2] == '\0') {
             return 0;
         }

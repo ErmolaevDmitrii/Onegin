@@ -1,3 +1,6 @@
+/// @file
+/// @brief Source file containing main function
+
 #include "OneginSort.h"
 #include <locale.h>
 
