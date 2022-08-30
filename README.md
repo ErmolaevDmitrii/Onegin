@@ -39,8 +39,8 @@ $ a -i <input-file-name> -o <output-file-name>
 $
 ```
 
-Without -i it will automatically use ``onegin.txt`` (included) as **input file name**.
-Without -o it will automatically use ``output.txt`` as **output file name**.
+Without ``-i`` it will automatically use ``onegin.txt`` (included) as **input file name**.
+Without ``-o`` it will automatically use ``output.txt`` as **output file name**.
 
 ## What's included?
 -------------------
